@@ -1,0 +1,61 @@
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>	
+	<style>
+		#loginButton{
+			background-color: #009EDB;
+			border: none;
+			color: white;
+			padding: 15px 32px;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 16px;
+		}
+	</style>
+    <body style='text-align: center;'>
+		<h1>
+			<div style='background-color: green; text-align: center; color: white'>
+				ACME Inc.
+			</div>
+		</h1>
+		<div id='loginPart'>
+			<button id='loginButton' onclick='login()'>Login with salesForce</button>
+		</div>
+		<div id='cartPart'>
+			<div>
+				This is cartPart
+			</div>
+		</div>
+    </body>
+	
+	
+	<script>
+		function login() {
+			console.log('hi im inside login')
+		}
+		$('#cartPart').hide();
+		console.log('showing first');
+		var settings = {
+			"url": "/getData",
+			"async": true,
+			"crossDomain": true,
+			"method": "GET"
+		}
+		
+		function getData() {
+			if (settings) {
+				$.ajax(settings).done(function (response) {
+					console.log('response ', response)
+					if (response === 'whatdaupupup') {
+						$('#loginPart').hide();
+						$('#cartPart').show();
+					}
+				});
+			}
+		}
+		
+		let timerId = setInterval(() => getData(), 2000);
+	</script>
+</html>
