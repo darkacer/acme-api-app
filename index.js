@@ -5,9 +5,9 @@ let port = process.env.PORT || 3000;
 
 let dataInput = 'im before data'
 
-app.get('/', (req, res) => {
+app.get('/', function(req, res) {
     res.send('hello world')
-})
+}) 
 
 app.get("/login", function (req, res) {
     res.sendFile(path.join(__dirname+'/index.html'));
