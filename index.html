@@ -32,9 +32,12 @@
 	
 	
 	<script>
-		function login() {
-			console.log('hi im inside login')
-		}
+		let clientId = '3MVG9d8..z.hDcPIA4C3lokx_ddUobFVY2b_LLeemoWaWaTizjDd0pj_7WCz5KLVmXlZ25F8tz5WV2kjcsszB';
+		//let clientId = '3MVG9d8..z.hDcPIA4C3lokx_ddUobFVY2b_LLeemoWaWaTizjDd0pj_7WCz5KLVmXlZ25F8tz5WV2kjcsszB';
+		
+		let redirect_uri = 'https://acme-api-app.herokuapp.com/'
+		//let redirect_uri = 'localhost:3000/oauthcallback'
+		let loginUrl = 'https://login.salesforce.com/services/oauth2/authorize?client_id='+clientId+'&redirect_uri=' + redirect_uri + '&response_type=code'
 		$('#cartPart').hide();
 		console.log('showing first');
 		var settings = {
@@ -43,7 +46,11 @@
 			"crossDomain": true,
 			"method": "GET"
 		}
-		
+		function login() {
+			console.log('hi im inside login')
+			window.location.href = loginUrl;
+
+		}
 		function getData() {
 			if (settings) {
 				$.ajax(settings).done(function (response) {
