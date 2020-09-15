@@ -74,6 +74,7 @@ app.get('/oauthcallback', (req, res) => {
     axios(config)
     .then(function (response) {
         console.log(JSON.stringify(response.data));
+        res.sendFile(path.join(__dirname+'/startShopping.html'));
     })
     .catch(function (error) {
         console.log(error);
