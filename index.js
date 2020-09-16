@@ -83,6 +83,15 @@ app.get('/oauthcallback', (req, res) => {
 
 })
 
+
+app.post("/cartdetails", (req, res) => {
+    let cartdata = req.query.cart;
+    console.log('cart detials are ');
+    let respo = ''
+    cartdata.forEach(el => respo += JSON.stringify(el))
+    res.send(respo)
+})
+
 app.get("/getData", function (req, res) {
     res.send(dataInput)
 });
