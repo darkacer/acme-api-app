@@ -48,23 +48,21 @@ app.get('/oauthcallback', (req, res) => {
     var config = {
         method: 'post',
         url: 'https://login.salesforce.com/services/oauth2/token',
-        headers: { 
-            
-        },
+        headers: {},
         data : data
     };
 
     axios(config)
     .then(function (response) {
         console.log(JSON.stringify(response.data));
-        res.sendFile(path.join(__dirname+'/public/startShopping.html'));
+        // res.sendFile(path.join(__dirname+'/public/startShopping.html'));
+        res.render("MyCart.ejs", {sampleJsonData: response.data});
     })
     .catch(function (error) {
         console.log(error);
     });
-
-
 })
+
 
 
 app.post("/setCartDetails", (req, res) => {
@@ -80,8 +78,11 @@ app.get("/getCartDetails", () => {
 })
 
 app.post("/resetCart", (req, res) => {
-    // showCart = false;
-    // cartData = [];
+
+})
+
+app.get("/showpage", (req, res) => {
+    res.sendFile(path.join(__dirname+'/public/startShopping.html'));
 })
 
 app.get("/getData", function (req, res) {
