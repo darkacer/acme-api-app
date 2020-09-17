@@ -1,13 +1,23 @@
 const express = require("express")
-const app = express()
-var axios = require('axios');
-var qs = require('qs');
+const axios = require('axios');
+const qs = require('qs');
 const path = require('path');
-let port = process.env.PORT || 3000;
+
+require('dotenv').config()
+
+const app = require("express")();
+const http = require("http").Server(app);
+const io = require("socket.io")(http);
+const port = process.env.PORT || 3000;
+
+
+app.use(express.static('public'));
+
+const redirect_uri = 'https://acme-api-app.herokuapp.com/oauthcallback';
+
+let usersMap = new Map();
 
 let dataInput = 'im before data'
-let cartData = [];
-let showCart = false;
 
 app.get('/', function(req, res) {
     res.send('hello world')
@@ -32,7 +42,7 @@ app.get('/oauthcallback', (req, res) => {
         'client_id': process.env.client_id,
         'code': code,
         'client_secret': process.env.client_secret,
-        'redirect_uri': 'https://acme-api-app.herokuapp.com/oauthcallback',
+        'redirect_uri': redirect_uri,
         'Content-type': 'application/x-www-form-urlencoded' 
     });
     var config = {
@@ -47,7 +57,7 @@ app.get('/oauthcallback', (req, res) => {
     axios(config)
     .then(function (response) {
         console.log(JSON.stringify(response.data));
-        res.sendFile(path.join(__dirname+'/startShopping.html'));
+        res.sendFile(path.join(__dirname+'/public/startShopping.html'));
     })
     .catch(function (error) {
         console.log(error);
@@ -59,19 +69,19 @@ app.get('/oauthcallback', (req, res) => {
 
 app.post("/setCartDetails", (req, res) => {
     let cartdata = JSON.parse(req.query.cart)
-    console.log('cart detials are ' + cartdata);
+    console.log('cart detials are ' + cartdata + process.env.client_id);
     let respo = ''
     cartdata.forEach(el => respo += JSON.stringify(el))
     res.send(respo)
 })
 
 app.get("/getCartDetails", () => {
-    
+    console.log('cart detials are ' + process.env);
 })
 
 app.post("/resetCart", (req, res) => {
-    showCart = false;
-    cartData = [];
+    // showCart = false;
+    // cartData = [];
 })
 
 app.get("/getData", function (req, res) {
@@ -82,6 +92,28 @@ app.get('/google', function(req, res) {
     res.redirect('https://google.com');
 })
 
-app.listen(port, () => {
-    console.log('im listening on port ', port)
+app.get('/loginSalesforce', function(req,res) {
+    console.log('doing from server' , process.env.client_id)
+    let loginUrl = 'https://login.salesforce.com/services/oauth2/authorize?client_id='+process.env.client_id+'&redirect_uri=' + redirect_uri + '&response_type=code'
+    res.redirect(loginUrl)
 })
+
+io.on("connection", function(socket) {
+    console.log('process ', process.env.client_id)
+    console.log('made connect', socket.id)
+
+	socket.on("user_join", function (data) {
+        console.log('user joined ');
+        usersMap.set(socket.id, {})
+    });
+    
+    socket.on('disconnect', () => {
+        console.log('user disconnected', socket.id)
+        usersMap.delete(socket.id)
+    });
+
+});
+
+http.listen(port, function() {
+	console.log("Listening on *:" + port);
+});

@@ -1,7 +1,11 @@
 <html>
 <head>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-</head>	
+	<title>Welcome To ACME corp</title>
+	<meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdn.socket.io/socket.io-2.3.0.js"></script>
+	<script src="/login.js"></script>
+</head>
 	<style>
 		#loginButton{
 			background-color: #009EDB;
@@ -23,45 +27,16 @@
 		<div id='loginPart'>
 			<button id='loginButton' onclick='login()'>Login with salesForce</button>
 		</div>
-		<div id='cartPart'>
+		
+		<!-- <div id='cartPart'>
 			<div>
 				This is cartPart
 			</div>
-		</div>
+		</div> -->
     </body>
 	
 	
 	<script>
-		let clientId = '3MVG9d8..z.hDcPIA4C3lokx_ddUobFVY2b_LLeemoWaWaTizjDd0pj_7WCz5KLVmXlZ25F8tz5WV2kjcsszB';
-		//let clientId = '3MVG9d8..z.hDcPIA4C3lokx_ddUobFVY2b_LLeemoWaWaTizjDd0pj_7WCz5KLVmXlZ25F8tz5WV2kjcsszB';
-		
-		let redirect_uri = 'https://acme-api-app.herokuapp.com/oauthcallback'
-		//let redirect_uri = 'localhost:3000/oauthcallback'
-		let loginUrl = 'https://login.salesforce.com/services/oauth2/authorize?client_id='+clientId+'&redirect_uri=' + redirect_uri + '&response_type=code'
-		$('#cartPart').hide();
-		console.log('showing first');
-		var settings = {
-			"url": "/getData",
-			"async": true,
-			"crossDomain": true,
-			"method": "GET"
-		}
-		function login() {
-			console.log('hi im inside login')
-			window.location.href = loginUrl;
-
-		}
-		function getData() {
-			if (settings) {
-				$.ajax(settings).done(function (response) {
-					console.log('response ', response)
-					if (response === 'whatdaupupup') {
-						$('#loginPart').hide();
-						$('#cartPart').show();
-					}
-				});
-			}
-		}
 		
 		// let timerId = setInterval(() => getData(), 2000);
 	</script>
