@@ -39,14 +39,7 @@ app.get('/oauthcallback', (req, res) => {
         method: 'post',
         url: 'https://login.salesforce.com/services/oauth2/token',
         headers: { 
-            'authorization': 'TX0cBnc30W1KDKpAzb4ci147ZIaiqO8q8TyQzPDUnW8l8qfbytYZkZNWTpaR', 
-            'sender_id': 'FSTSMS', 
-            'message': 'This is test message', 
-            'language': 'english', 
-            'route': 'p', 
-            'numbers': '', 
-            'Content-Type': 'application/x-www-form-urlencoded', 
-            'Cookie': 'BrowserId=ru_7xOZAEeq8lH964gzipA'
+            
         },
         data : data
     };
