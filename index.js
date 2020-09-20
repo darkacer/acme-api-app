@@ -109,7 +109,6 @@ app.post('/setCartData', (req, res) => {
     // let cartData = JSON.parse(req.query.data.cartdata)
     // let orderId = JSON.parse(req.query.data.orderId)
     // console.log('cart data ', cartdata, orderId)
-
     // let data = {
     //     cartData: cartdata,
     //     orderId: orderId
