@@ -105,6 +105,8 @@ app.get('/loginSalesforce', function(req,res) {
 })
 
 app.post('/setCartData', (req, res) => {
+    console.log('reciebed ####')
+    console.log('req body ', req.body)
     console.log('req body ', req.body.data)
     // let cartData = JSON.parse(req.query.data.cartdata)
     // let orderId = JSON.parse(req.query.data.orderId)
