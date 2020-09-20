@@ -103,7 +103,14 @@ app.get('/loginSalesforce', function(req,res) {
 app.post('/setCartData', (req, res) => {
     let cartdata = JSON.parse(req.query.data.cart)
     let orderId = JSON.parse(req.query.data.orderId)
+    console.log('cart data ', cartdata, orderId)
 
+    let data = {
+        cartData: cartdata,
+        orderId: orderId
+    }
+
+    io.emit('broadcast', data)
 
 })
 
