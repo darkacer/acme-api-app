@@ -14,6 +14,10 @@ const port = process.env.PORT || 3000;
 
 
 app.use(express.static('public'));
+app.use(express.urlencoded());
+
+// Parse JSON bodies (as sent by API clients)
+app.use(express.json());
 
 const redirect_uri = 'https://acme-api-app.herokuapp.com/oauthcallback';
 
@@ -101,17 +105,18 @@ app.get('/loginSalesforce', function(req,res) {
 })
 
 app.post('/setCartData', (req, res) => {
-    console.log('req is ', JSON.stringify(req.query.data))
-    let cartData = JSON.parse(req.query.data.cartdata)
-    let orderId = JSON.parse(req.query.data.orderId)
-    console.log('cart data ', cartdata, orderId)
+    console.log('req body ', req.body.data)
+    // let cartData = JSON.parse(req.query.data.cartdata)
+    // let orderId = JSON.parse(req.query.data.orderId)
+    // console.log('cart data ', cartdata, orderId)
 
     // let data = {
     //     cartData: cartdata,
     //     orderId: orderId
     // }
+    res.send('hi')
 
-    io.emit('broadcast', req.query.data)
+    io.emit('broadcast', req.body.data)
 
 })
 
