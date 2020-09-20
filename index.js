@@ -10,6 +10,8 @@ const http = require("http").Server(app);
 const io = require("socket.io")(http);
 const port = process.env.PORT || 3000;
 
+// const socket = io()
+
 
 app.use(express.static('public'));
 
@@ -63,8 +65,6 @@ app.get('/oauthcallback', (req, res) => {
     });
 })
 
-
-
 app.post("/setCartDetails", (req, res) => {
     let cartdata = JSON.parse(req.query.cart)
     console.log('cart detials are ' + cartdata + process.env.client_id);
@@ -78,7 +78,8 @@ app.get("/getCartDetails", () => {
 })
 
 app.post("/resetCart", (req, res) => {
-
+    // socket.emit('broadcast', 'google is good')
+    io.emit('broadcast', { data: 'some data' });
 })
 
 app.get("/showpage", (req, res) => {
@@ -99,14 +100,24 @@ app.get('/loginSalesforce', function(req,res) {
     res.redirect(loginUrl)
 })
 
+app.post('/setCartData', (req, res) => {
+    let cartdata = JSON.parse(req.query.data.cart)
+    let orderId = JSON.parse(req.query.data.orderId)
+
+
+})
+
 io.on("connection", function(socket) {
     console.log('process ', process.env.client_id)
     console.log('made connect', socket.id)
 
-	socket.on("user_join", function (data) {
-        console.log('user joined ');
-        usersMap.set(socket.id, {})
+	socket.on("login_success", function (data) {
+        console.log('user joined ', data);
+        usersMap.set(socket.id, {});
+
     });
+
+
     
     socket.on('disconnect', () => {
         console.log('user disconnected', socket.id)

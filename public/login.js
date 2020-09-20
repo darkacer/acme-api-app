@@ -1,8 +1,12 @@
 const socket = io();
 
+socket.on('broadcast', (data) => {
+    alert('broadcast message is '+ data)
+});
+
 function login() {
     window.location.href = '/loginSalesforce';
-    console.log('socket id ', socket.id)
+    // console.log('socket id ', socket.id)
     // window.open("/loginSalesforce");
 }
 // var settings = {

@@ -1,9 +1,15 @@
 <html>
+    <head>
+        <link rel="stylesheet" href="MyCart.css">
+        <script src='https://cdn.socket.io/socket.io-2.3.0.js'></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src='/MyCart.js'></script>
+    </head>
     <h1>ACME cart</h1>
 
-
-    <script>
-        var test = '<%- JSON.stringify(sampleJsonData) %>'
-        console.log('test', test)
-    </script>
+    <body>
+        <input type="button" onclick="CreateTableFromJSON()" value="Create Table From JSON" />
+        <p id="showData"></p>
+    </body>
+    
 </html>
