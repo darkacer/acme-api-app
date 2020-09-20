@@ -101,17 +101,17 @@ app.get('/loginSalesforce', function(req,res) {
 })
 
 app.post('/setCartData', (req, res) => {
-    console.log('req is ', JSON.stringify(req))
-    // let cartdata = JSON.parse(req.query.data.cart)
-    // let orderId = JSON.parse(req.query.data.orderId)
-    // console.log('cart data ', cartdata, orderId)
+    console.log('req is ', JSON.stringify(req.query.data))
+    let cartData = JSON.parse(req.query.data.cartdata)
+    let orderId = JSON.parse(req.query.data.orderId)
+    console.log('cart data ', cartdata, orderId)
 
     // let data = {
     //     cartData: cartdata,
     //     orderId: orderId
     // }
 
-    // io.emit('broadcast', data)
+    io.emit('broadcast', req.query.data)
 
 })
 
