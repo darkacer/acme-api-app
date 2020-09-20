@@ -14,7 +14,7 @@
     
     <script>
         var test = '<%- JSON.stringify(sampleJsonData) %>'
-        console.log('test', test)
+        console.log('test', JSON.parse(test))
 
         let accessToken = test.access_token;
         let instanceUrl = test.instance_url
