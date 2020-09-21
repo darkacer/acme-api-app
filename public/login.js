@@ -1,8 +1,8 @@
-const socket = io();
+// const socket = io();
 
-socket.on('broadcast', (data) => {
-    alert('broadcast message is '+ data)
-});
+// socket.on('broadcast', (data) => {
+//     alert('broadcast message is '+ data)
+// });
 
 function login() {
     window.location.href = '/loginSalesforce';

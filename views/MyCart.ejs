@@ -13,29 +13,27 @@
         </h1>
 
 
-        <input type="button" onclick="CreateTableFromJSON()" value="Create Table From JSON" />
-        <p id="showData"></p>
+        <!-- <input type="button" onclick="CreateTableFromJSON()" value="Create Table From JSON" /> -->
+        <p id="showData">
+            <input type="button" onclick="sendCompositeRequest()" value="Buy Now">
+        </p>
     </body>
     
     <script>
-        $("#showData").slideUp();
+        $("#showData").hide();
         var test = '<%- JSON.stringify(sampleJsonData) %>'
         console.log('test', JSON.parse(test))
         test = JSON.parse(test)
-        let accessToken = test.access_token;
-        let instanceUrl = test.instance_url
-
+        let accessToken = test.access_token || '00D7F000001wtp7!ARUAQJeuPENXZnXMIYjlPQN9t6ExiItLtV605Ymm9HsYBwBK7oHxPFuIrKT0KX60_R2YAGsW3z9Ug_KVNQ.5Am9Xqg4xlmy_';
+        let instanceUrl = test.instance_url || 'https://mybatcave-dev-ed.my.salesforce.com'
+        let socketId;
+        let orderId
+        let myBooks = []
 
 
         const socket = io();
 
-        let loginInfo = {
-            socketId: socket.Id, 
-            accessToken: accessToken, 
-            instanceUrl: instanceUrl
-        }
-        socket.emit('login_success', loginInfo)
-        console.log('loginInfo', loginInfo)
+        
 
 
         psuedoData = {
@@ -63,22 +61,42 @@
                }
             ]
          }
-        let validParameters = ['Name', 'ProductCode', 'quantity', 'price']
-        let myBooks = []
-        let orderId = psuedoData.orderId
-        let myNewBooks = psuedoData.cartdata
-        myNewBooks.forEach(el => {
-            temp = {}
-            validParameters.forEach(e => {
-                temp[e] = el[e]
-            })
-            myBooks.push(temp)
-        })
+        
 
-        console.log(JSON.stringify(myNewBooks))
+        // console.log(JSON.stringify(myNewBooks))
 
         socket.on('broadcast', (data) => {
-            console.log('server replied WITH' + data);
+            console.log('server replied WITH' + JSON.stringify(data));
+            psuedoData = data.cartdata
+            orderId = data.orderId
+
+            let validParameters = ['Name', 'ProductCode', 'quantity', 'price', 'PricebookEntries']
+            
+            // = psuedoData.orderId
+            let myNewBooks = psuedoData
+            myBooks = []
+            myNewBooks.forEach(el => {
+                temp = {}
+                validParameters.forEach(e => {
+                    temp[e] = el[e]
+                })
+                myBooks.push(temp)
+            })
+            CreateTableFromJSON();
+
+        });
+        socket.on('connect', () => {
+            //get the id from socket
+            console.log(socket.id);
+            socketId = socket.id
+
+            let loginInfo = {
+                socketId: socketId, 
+                accessToken: accessToken, 
+                instanceUrl: instanceUrl
+            }
+            socket.emit('login_success', loginInfo)
+            console.log('loginInfo', loginInfo)
         });
 
         function CreateTableFromJSON() {
@@ -117,10 +135,67 @@
 
             // FINALLY ADD THE NEWLY CREATED TABLE WITH JSON DATA TO A CONTAINER.
             var divContainer = document.getElementById("showData");
-            divContainer.innerHTML = "";
+            divContainer.innerHTML = "<input type='button' onclick='sendCompositeRequest()'' value='Buy Now'>";
             divContainer.appendChild(table);
             
             $("#showData").slideDown("slow", "swing");
+        }
+
+        function sendCompositeRequest() {
+            let body = {
+                'allOrNone':true,
+                'compositeRequest': [
+                    
+                ]
+            }
+
+            psuedoData.forEach(el => {
+                let temp = {
+                    "method":"post",
+                    "url": "/services/data/v48.0/sobjects/OrderItem",
+                    "body": {
+                        "ListPrice": el.price,
+                        "Quantity": el.quantity,
+                        "Product2Id": el.Id,
+                        "OrderId":orderId
+                    }
+                }
+                body.compositeRequest.push(temp)
+
+                body.compositeRequest.push({
+                    "method" : "PATCH",
+                    "url" : "/services/data/v38.0/sobjects/Order/" + orderId,
+                    "referenceId" : "UpdatedOrder",
+                    "body" : {  
+                        "Status": "Submitted To Customers"
+                    }
+                })
+            })
+
+            console.log('body ', body)
+
+            var settings = {
+                "url": "" + instanceUrl + '/services/data/v46.0/Composite',
+                "async": true,
+                "crossDomain": true,
+                "dataType": 'jsonp',
+                "method": "POST",
+                "headers": {
+                    "authorization": "Bearer " + accessToken,
+                    "Content-Type": "application/json",
+                    "Access-Control-Allow-Origin":"*",
+                    "origin": instanceUrl
+                },
+                "body": body
+            }
+            console.log('settings => ', JSON.stringify(settings))
+
+            $.ajax(settings).done(function (response) {
+                console.log('response is', JSON.stringify(response))
+            });
+            
+
+
         }
     </script>
 

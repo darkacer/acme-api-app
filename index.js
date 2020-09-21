@@ -134,8 +134,6 @@ io.on("connection", function(socket) {
         usersMap.set(socket.id, {});
 
     });
-
-
     
     socket.on('disconnect', () => {
         console.log('user disconnected', socket.id)
