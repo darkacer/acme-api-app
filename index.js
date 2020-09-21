@@ -121,6 +121,10 @@ app.post('/setCartData', (req, res) => {
 
 })
 
+app.get("/deleteme", (req, res) => {
+    res.render("MyCart.ejs", {sampleJsonData: 'response.data'});
+})
+
 io.on("connection", function(socket) {
     console.log('process ', process.env.client_id)
     console.log('made connect', socket.id)

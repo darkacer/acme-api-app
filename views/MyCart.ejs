@@ -5,17 +5,23 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <!-- <script src='/MyCart.js'></script> -->
     </head>
-    <h1>ACME cart</h1>
-
     <body>
+        <h1>
+            <div style='background-color: green; text-align: center; color: white'>
+                ACME Inc.
+            </div>
+        </h1>
+
+
         <input type="button" onclick="CreateTableFromJSON()" value="Create Table From JSON" />
         <p id="showData"></p>
     </body>
     
     <script>
+        $("#showData").slideUp();
         var test = '<%- JSON.stringify(sampleJsonData) %>'
         console.log('test', JSON.parse(test))
-
+        test = JSON.parse(test)
         let accessToken = test.access_token;
         let instanceUrl = test.instance_url
 
@@ -32,26 +38,44 @@
         console.log('loginInfo', loginInfo)
 
 
-        var myBooks = [
-        {
-            "Book ID": "1",
-            "Book Name": "Computer Architecture",
-            "Category": "Computers",
-            "Price": "125.60"
-        },
-        {
-            "Book ID": "2",
-            "Book Name": "Asp.Net 4 Blue Book",
-            "Category": "Programming",
-            "Price": "56.00"
-        },
-        {
-            "Book ID": "3",
-            "Book Name": "Popular Science",
-            "Category": "Science",
-            "Price": "210.40"
-        }
-        ]
+        psuedoData = {
+            "orderId":"8017F000003J8jDQAS",
+            "cartdata":[
+               {
+                  "Id":"01t7F000002BHcUQAW",
+                  "Name":"GenWatt Diesel 10kW",
+                  "ProductCode":"GC1020",
+                  "PricebookEntries":[
+                     "Array"
+                  ],
+                  "quantity":10,
+                  "price":5000
+               },
+               {
+                  "Id":"01t7F000002BHcTQAW",
+                  "Name":"GenWatt Diesel 200kW",
+                  "ProductCode":"GC1040",
+                  "PricebookEntries":[
+                     "Array"
+                  ],
+                  "quantity":10,
+                  "price":25000
+               }
+            ]
+         }
+        let validParameters = ['Name', 'ProductCode', 'quantity', 'price']
+        let myBooks = []
+        let orderId = psuedoData.orderId
+        let myNewBooks = psuedoData.cartdata
+        myNewBooks.forEach(el => {
+            temp = {}
+            validParameters.forEach(e => {
+                temp[e] = el[e]
+            })
+            myBooks.push(temp)
+        })
+
+        console.log(JSON.stringify(myNewBooks))
 
         socket.on('broadcast', (data) => {
             console.log('server replied WITH' + data);
@@ -95,23 +119,39 @@
             var divContainer = document.getElementById("showData");
             divContainer.innerHTML = "";
             divContainer.appendChild(table);
+            
+            $("#showData").slideDown("slow", "swing");
         }
     </script>
 
     <style>
                 
-        th, td, p, input {
-            font:14px Verdana;
-        }
-        table, th, td 
-        {
-            border: solid 1px #DDD;
+        table {
+            font-family: arial, sans-serif;
             border-collapse: collapse;
-            padding: 2px 3px;
+            width: 100%;
+          }
+          
+          td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+          }
+          
+          tr:nth-child(even) {
+            background-color: #dddddd;
+          }
+        
+        #loginButton{
+            background-color: #009EDB;
+            border: none;
+            color: white;
+            padding: 15px 32px;
             text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
         }
-        th {
-            font-weight:bold;
-        }
+    
     </style>
 </html>
