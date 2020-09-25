@@ -11,8 +11,6 @@
                 ACME Inc.
             </div>
         </h1>
-
-
         <!-- <input type="button" onclick="CreateTableFromJSON()" value="Create Table From JSON" /> -->
         <p id="showData">
             <input type="button" onclick="sendCompositeRequest()" value="Buy Now">
@@ -24,46 +22,15 @@
         var test = '<%- JSON.stringify(sampleJsonData) %>'
         console.log('test', JSON.parse(test))
         test = JSON.parse(test)
-        let accessToken = test.access_token || '00D7F000001wtp7!ARUAQJeuPENXZnXMIYjlPQN9t6ExiItLtV605Ymm9HsYBwBK7oHxPFuIrKT0KX60_R2YAGsW3z9Ug_KVNQ.5Am9Xqg4xlmy_';
+        let accessToken = test.access_token || '00D7F000001wtp7!ARUAQHilmhNQMDoCTCMMxZFYFdbCQpB3cM0Mus6MS4KTo459eXoCsFsl6bkx1QInxAaDM8rqVi5RED7Wfr4stFxX5wzAXURo';
         let instanceUrl = test.instance_url || 'https://mybatcave-dev-ed.my.salesforce.com'
         let socketId;
         let orderId
         let myBooks = []
 
-
         const socket = io();
 
-        
-
-
-        psuedoData = {
-            "orderId":"8017F000003J8jDQAS",
-            "cartdata":[
-               {
-                  "Id":"01t7F000002BHcUQAW",
-                  "Name":"GenWatt Diesel 10kW",
-                  "ProductCode":"GC1020",
-                  "PricebookEntries":[
-                     "Array"
-                  ],
-                  "quantity":10,
-                  "price":5000
-               },
-               {
-                  "Id":"01t7F000002BHcTQAW",
-                  "Name":"GenWatt Diesel 200kW",
-                  "ProductCode":"GC1040",
-                  "PricebookEntries":[
-                     "Array"
-                  ],
-                  "quantity":10,
-                  "price":25000
-               }
-            ]
-         }
-        
-
-        // console.log(JSON.stringify(myNewBooks))
+        psuedoData = {}
 
         socket.on('broadcast', (data) => {
             console.log('server replied WITH' + JSON.stringify(data));
@@ -71,8 +38,7 @@
             orderId = data.orderId
 
             let validParameters = ['Name', 'ProductCode', 'quantity', 'price', 'PricebookEntries']
-            
-            // = psuedoData.orderId
+
             let myNewBooks = psuedoData
             myBooks = []
             myNewBooks.forEach(el => {
@@ -142,58 +108,40 @@
         }
 
         function sendCompositeRequest() {
-            let body = {
-                'allOrNone':true,
-                'compositeRequest': [
-                    
-                ]
+            let data = {
+                instanceUrl: instanceUrl,
+                accessToken: accessToken,
+                socketId: socketId,
+                sObjects: []
             }
 
-            psuedoData.forEach(el => {
-                let temp = {
-                    "method":"post",
-                    "url": "/services/data/v48.0/sobjects/OrderItem",
-                    "body": {
-                        "ListPrice": el.price,
+            data.sObjects = psuedoData.map(el => {
+                return {
+                    mode: 'insert',
+                    sobject: 'OrderItem',
+                    record: {
                         "Quantity": el.quantity,
-                        "Product2Id": el.Id,
-                        "OrderId":orderId
+                        "Product2Id": el.Product2Id,
+                        "OrderId":orderId,
+                        "PricebookEntryId": el.PricebookEntries[0].Id,
+                        "UnitPrice": el.price
                     }
                 }
-                body.compositeRequest.push(temp)
-
-                body.compositeRequest.push({
-                    "method" : "PATCH",
-                    "url" : "/services/data/v38.0/sobjects/Order/" + orderId,
-                    "referenceId" : "UpdatedOrder",
-                    "body" : {  
-                        "Status": "Submitted To Customers"
-                    }
-                })
             })
 
-            console.log('body ', body)
+            // socket.emit('performDML', data)
+            data.sObjects.push(
+                {
+                    mode: 'update',
+                    sobject: 'Order',
+                    record:{
+                        Id: orderId, 
+                        Status: 'Ordered By Customers'
+                    }
+                }
+            )
 
-            var settings = {
-                "url": "" + instanceUrl + '/services/data/v46.0/Composite',
-                "async": true,
-                "crossDomain": true,
-                "dataType": 'jsonp',
-                "method": "POST",
-                "headers": {
-                    "authorization": "Bearer " + accessToken,
-                    "Access-Control-Allow-Origin":"*",
-                    "origin": instanceUrl
-                },
-                "body": body
-            }
-            console.log('settings => ', JSON.stringify(settings))
-
-            $.ajax(settings).done(function (response) {
-                console.log('response is', JSON.stringify(response))
-            });
-            
-
+            socket.emit('performDML', data)
 
         }
     </script>

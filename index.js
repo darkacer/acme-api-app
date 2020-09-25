@@ -9,7 +9,8 @@ const app = require("express")();
 const http = require("http").Server(app);
 const io = require("socket.io")(http);
 const port = process.env.PORT || 3000;
-
+const jsforce = require('jsforce');
+const { CompositeCall } = require('sf-composite-call');
 // const socket = io()
 
 
@@ -140,6 +141,28 @@ io.on("connection", function(socket) {
         usersMap.delete(socket.id)
     });
 
+    socket.on('performDML', async (data) => {
+        
+        var conn = new jsforce.Connection({
+            instanceUrl : data.instanceUrl,
+            accessToken : data.accessToken
+        });
+        const compositeCall = new CompositeCall({
+            allOrNone: true,
+            jsforceConnection: conn
+        });
+
+        data.sObjects.forEach(el => {
+            let mycall = compositeCall.addSObject(el.sobject)
+            if(el.mode === 'insert') mycall.create(el.record)
+            if(el.mode === 'update') mycall.update(el.record)
+        })
+
+        const result = await compositeCall.execute()
+
+        console.log('result => ', JSON.stringify(result))
+        io.emit('orderPlaced' + data.socketId, { data: 'some data' });
+    })
 });
 
 http.listen(port, function() {
