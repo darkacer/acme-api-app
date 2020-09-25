@@ -121,7 +121,7 @@
                     sobject: 'OrderItem',
                     record: {
                         "Quantity": el.quantity,
-                        "Product2Id": el.Product2Id,
+                        "Product2Id": el.PricebookEntries[0].Product2Id,
                         "OrderId":orderId,
                         "PricebookEntryId": el.PricebookEntries[0].Id,
                         "UnitPrice": el.price
