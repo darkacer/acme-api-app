@@ -13,7 +13,6 @@
         </h1>
         <!-- <input type="button" onclick="CreateTableFromJSON()" value="Create Table From JSON" /> -->
         <p id="showData">
-            <input type="button" onclick="sendCompositeRequest()" value="Buy Now">
         </p>
     </body>
     
@@ -22,7 +21,7 @@
         var test = '<%- JSON.stringify(sampleJsonData) %>'
         console.log('test', JSON.parse(test))
         test = JSON.parse(test)
-        let accessToken = test.access_token || '00D7F000001wtp7!ARUAQHilmhNQMDoCTCMMxZFYFdbCQpB3cM0Mus6MS4KTo459eXoCsFsl6bkx1QInxAaDM8rqVi5RED7Wfr4stFxX5wzAXURo';
+        let accessToken = test.access_token || '00D7F000001wtp7!ARUAQIbUQWpsfHGIdhyBv9daxEZm4LwWKQCU7fMVZMTpkrLEQX575IWSki0Vo5S0haIvvxvcGFn_oSVaQ1ZzJLkAY.jYoHiZ';
         let instanceUrl = test.instance_url || 'https://mybatcave-dev-ed.my.salesforce.com'
         let socketId;
         let orderId
@@ -101,8 +100,9 @@
 
             // FINALLY ADD THE NEWLY CREATED TABLE WITH JSON DATA TO A CONTAINER.
             var divContainer = document.getElementById("showData");
-            divContainer.innerHTML = "<input type='button' onclick='sendCompositeRequest()'' value='Buy Now'>";
+            var str = "<input type='button' onclick='sendCompositeRequest()'' value='Buy Now'>";
             divContainer.appendChild(table);
+            divContainer.insertAdjacentHTML( 'beforeend', str );
             
             $("#showData").slideDown("slow", "swing");
         }
@@ -140,9 +140,9 @@
                     }
                 }
             )
-            console.log('data =>', JSON.stringify(data))
+            console.log('data =>', JSON.stringify(data)) 
             socket.emit('performDML', data)
-
+            alert('congratulations Your order has been Placed!');
         }
     </script>
 

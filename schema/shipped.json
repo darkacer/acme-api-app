@@ -1,0 +1,71 @@
+{
+    "swagger":"2.0",
+    "basePath":"/",
+    "info":{
+        "version":"1.0",
+        "title":"External Service for demo bank",
+        "description":"### External Service for demo bank",
+        "x-vcap-service-name":"DemoShippedService"
+    },
+    "securityDefinitions":{
+        "basicAuth":{
+            "type":"basic"
+        }
+    },
+    "security":[
+        {
+            "basicAuth":[]
+        }
+    ],
+    "tags":[
+        {
+            "name":"DemoShippedService"
+        }
+    ],
+    "paths":{
+        "/shipped":{
+            "post":{
+                "operationId":"sendShipped",
+                "summary":"Add an account",
+                "description":"Add an account to the database",
+                "consumes":[
+                    "text/plain"
+                ],
+                "produces":[
+                    "application/json"
+                ],
+                "parameters":[
+                    {
+                        "name":"orderId",
+                        "in":"path",
+                        "required":true,
+                        "type":"string",
+                        "description":"Id of Order"
+                    },
+                    {
+                        "name":"userId",
+                        "in":"query",
+                        "required":true,
+                        "type":"string",
+                        "description":"User ID"
+                    }
+                ],
+                "responses":{
+                    "201":{
+                        "description":"The response when system sends correct notification",
+                        "schema":{
+                            "type":"string"
+                        }
+                    },
+                    "404":{
+                        "description":"Error response if the account is not supported by service or account is not found",
+                        "schema":{
+                            "type":"string"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions":{}
+ }

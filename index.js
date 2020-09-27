@@ -126,6 +126,15 @@ app.get("/deleteme", (req, res) => {
     res.render("MyCart.ejs", {sampleJsonData: 'response.data'});
 })
 
+app.get("/schema/shipped", (req, res) => {
+    res.header("Content-Type",'application/json');
+    res.sendFile(path.join(__dirname, '/schema/shipped.json'));
+})
+
+app.post('/shipped', (req, res) => {
+    res.send('success' + req.query.orderId + req.query.userId)
+})
+
 io.on("connection", function(socket) {
     console.log('process ', process.env.client_id)
     console.log('made connect', socket.id)
