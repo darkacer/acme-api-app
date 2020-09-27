@@ -132,6 +132,7 @@ app.get("/schema/shipped", (req, res) => {
 })
 
 app.post('/shipped', (req, res) => {
+    console.log('this order was shipped ', req.query.orderId, req.query.userId)
     res.send('success' + req.query.orderId + req.query.userId)
 })
 
