@@ -37,7 +37,7 @@
                 "parameters":[
                     {
                         "name":"orderId",
-                        "in":"path",
+                        "in":"query",
                         "required":true,
                         "type":"string",
                         "description":"Id of Order"
