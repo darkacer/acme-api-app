@@ -64,6 +64,10 @@
             console.log('loginInfo', loginInfo)
         });
 
+        socket.on('shipped', (data) => {
+            alert('Message for ' + data.userId + ' your Order Id ' + data.orderId)
+        })
+
         function CreateTableFromJSON() {
             var col = [];
             for (var i = 0; i < myBooks.length; i++) {

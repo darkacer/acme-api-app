@@ -132,8 +132,9 @@ app.get("/schema/shipped", (req, res) => {
 })
 
 app.post('/shipped', (req, res) => {
-    console.log('this order was shipped ', req.query.orderId, req.query.userId + JSON.stringify(req.body))
+    console.log('this order was shipped ' + JSON.stringify(req.body))
     res.send('success' + req.query.orderId + req.query.userId)
+    io.emit('shipped', req.body)
 })
 
 io.on("connection", function(socket) {
